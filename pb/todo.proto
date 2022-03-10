@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package = "./pb";
+
+package grpc;
+
+service Todo {
+    rpc AddItem (Item) returns (CommonActionReply);
+}
+
+message Item {
+    string Title = 1;
+    bool completed = 2;
+} 
+
+message CommonActionReply {
+    bool Success = 1;
+}
