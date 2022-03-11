@@ -11,6 +11,8 @@ service Todo {
     rpc GetItems(GetItemsRequest) returns (GetItemsReply);
     // Get a sigle item by title
     rpc GetItem(GetItemRequest) returns (GetItemReply);
+    // Update item by title
+    rpc UpdateItem(UpdateItemRequest) returns (CommonActionReply);
 }
 // Represents the iten of todo list 
 message Item {
@@ -21,15 +23,21 @@ message Item {
 message DeleteRequest {
     string Title = 1;
 }
-// The getAll request
+// The get all request
 message GetItemsRequest {}
+// The get request
 message GetItemRequest{
     string Title = 1;
+}
+// The update request
+message UpdateItemRequest {
+    Item Item = 1;
 }
 // The response message containing all items
 message GetItemsReply {
     repeated Item Items = 1;
 }
+// The repsonse message containing the requested item
 message GetItemReply {
     Item Item = 1;
 }

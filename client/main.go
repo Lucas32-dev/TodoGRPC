@@ -40,19 +40,20 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	AddMultiple(ctx, c, 4)
-
-	r, err := c.GetItems(ctx, &pb.GetItemsRequest{})
-	if err != nil {
-		log.Panicf("fail to get all:%v", err)
-	}
-	log.Printf("All:%v", r.GetItems())
-
-	item, err := c.GetItem(ctx, &pb.GetItemRequest{Title: ""})
+	r, err := c.AddItem(ctx, &pb.Item{Title: "Study WW2", Completed: false})
 
 	if err != nil {
-		log.Fatalf("fail to get one:%v", err)
+		log.Printf("could not add:%v", err)
 	}
-	log.Printf("Item:%v", item.GetItem())
+
+	log.Printf("add req -> success: %v, res: %v", r.GetSuccess(), r.GetMessage())
+
+	r, err = c.UpdateItem(ctx, &pb.UpdateItemRequest{Item: &pb.Item{Title: "Study WW2", Completed: true}})
+
+	if err != nil {
+		log.Printf("could not add:%v", err)
+	}
+
+	log.Printf("add req -> success: %v, res: %v", r.GetSuccess(), r.GetMessage())
 
 }

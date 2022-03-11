@@ -39,9 +39,10 @@ func (s *server) RemoveItem(ctx context.Context, in *pb.DeleteRequest) (*pb.Comm
 
 // GetAll implement todo service interface
 func (s *server) GetItems(ctx context.Context, in *pb.GetItemsRequest) (*pb.GetItemsReply, error) {
-
+	// Make a slice with the cap of the items's map
 	items := make([]*pb.Item, 0, len(todoList))
 
+	// Fill the slice with the map items
 	for _, v := range todoList {
 		items = append(items, v)
 	}
@@ -49,6 +50,7 @@ func (s *server) GetItems(ctx context.Context, in *pb.GetItemsRequest) (*pb.GetI
 	return &pb.GetItemsReply{Items: items}, nil
 }
 
+// GetItem implement todo service interface
 func (s *server) GetItem(ctx context.Context, in *pb.GetItemRequest) (*pb.GetItemReply, error) {
 	// Get item
 	item := todoList[in.GetTitle()]
@@ -59,6 +61,18 @@ func (s *server) GetItem(ctx context.Context, in *pb.GetItemRequest) (*pb.GetIte
 	}
 
 	return &pb.GetItemReply{Item: item}, nil
+}
+
+// UpdateItem implement todo service interface
+func (s *server) UpdateItem(ctx context.Context, in *pb.UpdateItemRequest) (*pb.CommonActionReply, error) {
+	// NotFound verify
+	if todoList[in.GetItem().Title] == nil {
+		return &pb.CommonActionReply{Success: false, Message: "Item not found"}, serverTypes.ItemNotFound{}
+	}
+
+	// Update Item
+	todoList[in.GetItem().Title] = in.GetItem()
+	return &pb.CommonActionReply{Success: true, Message: "Modified"}, nil
 }
 
 func main() {
