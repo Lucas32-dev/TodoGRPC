@@ -2,17 +2,29 @@ syntax = "proto3";
 
 option go_package = "./pb";
 
-package grpc;
+package todo;
 
+// The todo service definition
 service Todo {
+    // Send an item
     rpc AddItem (Item) returns (CommonActionReply);
+    // Remove an item
+    rpc RemoveItem (DeleteRequest) returns (CommonActionReply);
 }
 
+// Represents the iten of todo list 
 message Item {
     string Title = 1;
-    bool completed = 2;
-} 
+    bool Completed = 2;
+}
 
+// The delete request
+message DeleteRequest {
+    string Title = 1;
+}
+
+// The response message containing the success state of request and a message
 message CommonActionReply {
     bool Success = 1;
+    string Message = 2;
 }
