@@ -8,3 +8,22 @@ How? You can define multiple services in a proto file, specifying the methods th
 ## Project application
 
 This project is an simple TODO project, where the server holds an list of todo and their state, and client calls methods to manipulate it.
+
+## Run project
+
+Install Go 1.17
+
+Set up the server
+
+```bash
+go run server/main.go
+```
+
+Run client
+
+```bash
+go run client/main.go
+```
+
+Feel free to play around with the client.  
+You can check the proto file to see with methods are implemened in Todo service
