@@ -24,6 +24,8 @@ type TodoClient interface {
 	RemoveItem(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*CommonActionReply, error)
 	// Get all items
 	GetItems(ctx context.Context, in *GetItemsRequest, opts ...grpc.CallOption) (*GetItemsReply, error)
+	// Get a sigle item by title
+	GetItem(ctx context.Context, in *GetItemRequest, opts ...grpc.CallOption) (*GetItemReply, error)
 }
 
 type todoClient struct {
@@ -61,6 +63,15 @@ func (c *todoClient) GetItems(ctx context.Context, in *GetItemsRequest, opts ...
 	return out, nil
 }
 
+func (c *todoClient) GetItem(ctx context.Context, in *GetItemRequest, opts ...grpc.CallOption) (*GetItemReply, error) {
+	out := new(GetItemReply)
+	err := c.cc.Invoke(ctx, "/todo.Todo/GetItem", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TodoServer is the server API for Todo service.
 // All implementations must embed UnimplementedTodoServer
 // for forward compatibility
@@ -71,6 +82,8 @@ type TodoServer interface {
 	RemoveItem(context.Context, *DeleteRequest) (*CommonActionReply, error)
 	// Get all items
 	GetItems(context.Context, *GetItemsRequest) (*GetItemsReply, error)
+	// Get a sigle item by title
+	GetItem(context.Context, *GetItemRequest) (*GetItemReply, error)
 	mustEmbedUnimplementedTodoServer()
 }
 
@@ -86,6 +99,9 @@ func (UnimplementedTodoServer) RemoveItem(context.Context, *DeleteRequest) (*Com
 }
 func (UnimplementedTodoServer) GetItems(context.Context, *GetItemsRequest) (*GetItemsReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetItems not implemented")
+}
+func (UnimplementedTodoServer) GetItem(context.Context, *GetItemRequest) (*GetItemReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetItem not implemented")
 }
 func (UnimplementedTodoServer) mustEmbedUnimplementedTodoServer() {}
 
@@ -154,6 +170,24 @@ func _Todo_GetItems_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Todo_GetItem_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetItemRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TodoServer).GetItem(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/todo.Todo/GetItem",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TodoServer).GetItem(ctx, req.(*GetItemRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Todo_ServiceDesc is the grpc.ServiceDesc for Todo service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -172,6 +206,10 @@ var Todo_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetItems",
 			Handler:    _Todo_GetItems_Handler,
+		},
+		{
+			MethodName: "GetItem",
+			Handler:    _Todo_GetItem_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

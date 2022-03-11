@@ -6,6 +6,7 @@ import (
 	"net"
 
 	"github.com/Lucas32-dev/TodoGRPC/pb"
+	serverTypes "github.com/Lucas32-dev/TodoGRPC/types"
 	"google.golang.org/grpc"
 )
 
@@ -46,6 +47,18 @@ func (s *server) GetItems(ctx context.Context, in *pb.GetItemsRequest) (*pb.GetI
 	}
 
 	return &pb.GetItemsReply{Items: items}, nil
+}
+
+func (s *server) GetItem(ctx context.Context, in *pb.GetItemRequest) (*pb.GetItemReply, error) {
+	// Get item
+	item := todoList[in.GetTitle()]
+
+	// NotFound verify
+	if item == nil {
+		return &pb.GetItemReply{Item: item}, serverTypes.ItemNotFound{}
+	}
+
+	return &pb.GetItemReply{Item: item}, nil
 }
 
 func main() {

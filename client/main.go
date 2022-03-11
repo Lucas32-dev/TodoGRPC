@@ -47,4 +47,12 @@ func main() {
 		log.Panicf("fail to get all:%v", err)
 	}
 	log.Printf("All:%v", r.GetItems())
+
+	item, err := c.GetItem(ctx, &pb.GetItemRequest{Title: ""})
+
+	if err != nil {
+		log.Fatalf("fail to get one:%v", err)
+	}
+	log.Printf("Item:%v", item.GetItem())
+
 }
