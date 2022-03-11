@@ -36,6 +36,18 @@ func (s *server) RemoveItem(ctx context.Context, in *pb.DeleteRequest) (*pb.Comm
 	return &pb.CommonActionReply{Success: true, Message: "deleted"}, nil
 }
 
+// GetAll implement todo service interface
+func (s *server) GetItems(ctx context.Context, in *pb.GetItemsRequest) (*pb.GetItemsReply, error) {
+
+	items := make([]*pb.Item, 0, len(todoList))
+
+	for _, v := range todoList {
+		items = append(items, v)
+	}
+
+	return &pb.GetItemsReply{Items: items}, nil
+}
+
 func main() {
 	// listen to port 9000
 	lis, err := net.Listen("tcp", ":9000")
