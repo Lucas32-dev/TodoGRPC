@@ -26,4 +26,4 @@ go run client/main.go
 ```
 
 Feel free to play around with the client.  
-You can check the proto file to see with methods are implemened in Todo service
+You can check the proto file to see which methods are implemened in Todo service
